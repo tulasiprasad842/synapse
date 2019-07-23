@@ -1,0 +1,44 @@
+<div fxLayout="row wrap">
+    <div fxFlex.gt-sm="33.3" fxFlex.gt-xs="50" fxFlex="100" *ngFor="let item of platformQuotaList">
+      <mat-card fxFlex class="usercard no-shadow mat-elevation-z0 prepaidcard">
+        <mat-card-content>
+          <div fxLayout="row wrap">
+            <div fxFlex="98" class="UcardLeft">
+              <div class="pad-all2 clearfix" style="padding-bottom: 8px !important;">
+                <div fxLayout="row wrap" class="clearfix card-top">
+                  <div>
+                    <div class="card-avatar">
+                      <div class="image-inner">
+                        <img src="assets/images/customer_icon.svg" />
+                      </div>
+                    </div>
+                  </div>
+                   <div fxFlex="75">
+
+                    <div class="card-details">
+                      <!-- <h3>{{item.}}</h3> -->
+                      <div>
+                        <small>Available Credits :<span>{{item.availableBalance}}</span></small>
+                        <small>CreditType:<span>{{item.creditType==1?'PostPaid':'Prepaid'}}</span></small>
+                        <small>Credits: <span class="prepaidtext">{{item.credits}}</span></small>
+                      </div>                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="Umore-btn">
+              <button mat-icon-button [matMenuTriggerFor]="UcardEdit"><i class="ti-more-alt"></i></button>
+              <mat-menu #UcardEdit="matMenu">
+                <button mat-menu-item (click)="setLimit(item)"><i class="ti-pencil-alt"></i>
+                  {{'CreditManagementModule.departmentquota.manage.setLimit' | translate}}</button>
+              </mat-menu>
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>

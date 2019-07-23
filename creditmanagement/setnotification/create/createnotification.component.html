@@ -1,0 +1,146 @@
+<mat-card>
+  <form [formGroup]="notificationsForm">
+    <mat-card-header style="border-bottom: 1px solid #eee;">
+      <h4>Set Alert on Expiry</h4>
+      <button mat-icon-button [mat-dialog-close] style="position: absolute; right: 1%;">
+        <i class="ti-close"></i>
+      </button>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="clearfix">
+        <div class="col-sm-12">
+
+          <div class="example-container">
+
+            <input type="hidden" formControlName="notificationId">
+
+            <mat-form-field style="width: 100%;">
+              <input matInput placeholder="Alert Name" formControlName="notificationName" cdkFocusInitial maxlength="50">
+              <!-- <mat-error *ngIf="notificationsForm.controls.notificationName.errors?.required">Alert name is required
+              </mat-error>
+              <mat-error *ngIf="notificationsForm.controls.notificationName.errors?.minlength">Enter minimum of 2 characters
+              </mat-error> -->
+            </mat-form-field>
+
+            <div>
+              <span>Channels:</span>
+              <mat-checkbox color="primary" formControlName="chemail" class="pad-lft">Email</mat-checkbox>
+              <mat-checkbox color="primary" formControlName="chsms" class="pad-lft">SMS</mat-checkbox>
+            </div>
+
+
+            <mat-form-field style="width: 100%;">
+              <input matInput placeholder="Name" formControlName="name" allow-alpha-special-singlespace maxlength="20">
+              <mat-error *ngIf="notificationsForm.controls.name.errors?.required">Name is required
+              </mat-error>
+              <mat-error *ngIf="notificationsForm.controls.name.errors?.minlength">Enter minimum of 5 characters
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field style="width: 100%;">
+              <input matInput placeholder="Email ID" formControlName="email" maxlength="50" allow-email>
+              <mat-error *ngIf="notificationsForm.controls.email.errors?.required">Email is required
+              </mat-error>
+              <mat-error *ngIf="notificationsForm.controls.email.errors?.minlength">Enter valid email address
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field style="width: 100%;">
+              <input matInput placeholder="Mobile Number" formControlName="phone" maxlength="12" allow-mobilenumber-nospace>
+              <mat-error *ngIf="notificationsForm.controls.phone.errors?.required">Mobile Number is required
+              </mat-error>
+              <mat-error *ngIf="notificationsForm.controls.phone.errors?.minlength">Enter valid mobile number
+              </mat-error>
+            </mat-form-field>
+
+            <div class="form-actions">
+              <button mat-raised-button class="submitbutton" type="button" (click)="Add()">Add</button>
+            </div>&nbsp;&nbsp;
+
+            <div *ngIf="add || edit">
+              <table class="table table-horizontal table-fixed" style="width:100%;">
+                <thead>
+                  <tr>
+                    <th class="col-xs-3">Name</th>
+                    <th class="col-xs-4">Email</th>
+                    <th class="col-xs-3">Mobile Number</th>
+                    <th class="col-xs-2">&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let alert of alertslist">
+                    <td class="col-xs-3">
+                      <input type="text" value="{{alert.name}}" [disabled]="!alert.isEditable" style="width:90px; border:none; background: none;"
+                      />
+                    </td>
+                    <td class="col-xs-4">
+                      <input type="text" value="{{alert.isEditable ? alert.email : alert.email | truncate : 12 : '...'}}" [disabled]="!alert.isEditable" style="width:90px; border:none; background: none;"/>
+                    </td>
+                    <td class="col-xs-3">
+                      <input type="text" value="{{alert.mobile}}" [disabled]="!alert.isEditable" style="width:90px; border:none; background: none;"
+                      />
+                    </td>
+                    <td class="col-xs-2">
+                      <i class="ti-pencil-alt" *ngIf="edit && !alert.isEditable" (click)="alert.isEditable=!alert.isEditable"></i>&nbsp;
+                      <i class="ti-trash" *ngIf="!edit || !alert.isEditable"></i>&nbsp;
+                      <i class="ti-save" *ngIf="edit && alert.isEditable" (click)="alert.isEditable=!alert.isEditable"></i>&nbsp;
+                      <i class="ti-close" *ngIf="edit && alert.isEditable" (click)="alert.isEditable=!alert.isEditable"></i>
+                    </td>
+                  </tr>
+                </tbody>
+                <!-- <tr>
+                  <td><input type="text" value="Ramesh" [disabled]="!isEditable" style="width:100px"/></td>
+                  <td><input type="text" value="Ramesh@vm.com" [disabled]="!isEditable" style="width:100px"/></td>
+                  <td><input type="text" value="9666254777" [disabled]="!isEditable" style="width:100px"/></td>
+                  <td><i class="ti-pencil-alt mar-rgt" *ngIf="edit && !isEditable" (click)="isEditable=!isEditable"></i>
+                    <i class="ti-save mar-rgt" *ngIf="edit && isEditable" (click)="isEditable=!isEditable"></i>
+                   <i class="ti-close"></i></td>
+                </tr>
+                <tr>
+                  <td><input type="text" value="Mahesh" [disabled]="!isEditable" style="width:100px"/></td>
+                  <td><input type="text" value="mahesh@vm.com" [disabled]="!isEditable" style="width:100px"/></td>
+                  <td><input type="text" value="9666254777" [disabled]="!isEditable" style="width:100px"/></td>
+                  <td><i class="ti-pencil-alt mar-rgt" *ngIf="edit && !isEditable" (click)="isEditable=!isEditable"></i>
+                    <i class="ti-save mar-rgt" *ngIf="edit && isEditable" (click)="isEditable=!isEditable"></i>
+                   <i class="ti-close"></i></td>
+                </tr> -->
+              </table>
+            </div>
+
+            <mat-form-field style="width: 100%;">
+              <input matInput placeholder="Expiring in Days" formControlName="days" maxlength="3" allow-numbers-nospace>
+              <mat-error *ngIf="notificationsForm.controls.days.errors?.required">Expiring in Days is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field style="width: 100%;">
+              <input matInput placeholder="Credits Below" formControlName="creditsbelow" allow-numbers-nospace maxlength="10">
+              <mat-error *ngIf="notificationsForm.controls.creditsbelow.errors?.required">Credits Below is required
+              </mat-error>
+              <mat-error *ngIf="notificationsForm.controls.creditsbelow.errors?.minlength">Enter valid Credits
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field style="width: 100%;">
+              <textarea matInput placeholder="SMS Text" formControlName="smstext" maxlength="100"></textarea>
+              <mat-error *ngIf="notificationsForm.controls.smstext.errors?.required">SMS Text is required
+              </mat-error>
+              <mat-error *ngIf="notificationsForm.controls.smstext.errors?.minlength">Enter minimum 10 characters
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="form-actions">
+      <div style="margin-left: 12px;">
+        <button mat-raised-button type="submit" class="submitbutton" [disabled]="!notificationsForm.valid" (click)="createnotification(notificationsForm)">Save</button>
+      </div>
+
+    </mat-card-actions>
+
+  </form>
+</mat-card>

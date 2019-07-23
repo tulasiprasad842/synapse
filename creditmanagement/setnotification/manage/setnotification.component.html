@@ -1,0 +1,147 @@
+<div fxLayout="row wrap">
+
+  <div fxFlex="60">
+    <button mat-raised-button (click)="addNotification()" class="addbutton">
+      <i class="ti-bell"></i>&nbsp; Set Alert on Expiry</button>
+  </div>
+
+  <div fxFlex="40" class="search-align pad-rgt">
+    <div fxFlex="92">
+      <a [matMenuTriggerFor]="SearchGrid"><img src="assets/images/filter-icon.png" width="12" /></a> &nbsp;
+      <mat-form-field>
+        <mat-menu #SearchGrid="matMenu">
+          <button mat-menu-item><i class="ti-check"></i> Active</button>
+          <button mat-menu-item><i class="ti-check-box"></i> In-Active</button>
+          <button mat-menu-item><i class="ti-reload"></i> Reset</button>
+        </mat-menu>
+        <input matInput [(ngModel)]="searchdata" placeholder="Search">
+      </mat-form-field>
+    </div>
+
+    <div fxFlex="8">
+      <div style="margin-top: 18px; font-size: 16px;">
+        <i *ngIf="listflag" class="ti-layout-grid2-alt  text-muted" matTooltip="Grid View" (click)="loadGrid()"
+          style="cursor: pointer; "></i>&nbsp;
+        <i *ngIf="!listflag" class="ti-menu text-muted" matTooltip="List View" (click)="loadList()" style="cursor: pointer;"></i>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div fxLayout="row wrap" *ngIf="!listflag">
+  <div fxFlex.gt-sm="33.3" fxFlex.gt-xs="50" fxFlex="100" *ngFor="let notify of filternotification | Notificationfilter : notifications : searchdata">
+    <mat-card fxFlex class="usercard no-shadow mat-elevation-z0">
+      <mat-card-content>
+        <div fxLayout="row wrap">
+          <div fxFlex="98" class="UcardLeft">
+            <div class="pad-all2 clearfix" style="padding-bottom: 8px !important;">
+              <div fxLayout="row wrap" class="clearfix card-top">
+                <div>
+
+                  <div class="card-avatar">
+                      <i class="ti-bell"></i>
+                  </div>
+
+                </div>
+                <div fxFlex="77">
+                  <div class="card-details">
+                    <span>{{notify.notificationName}}</span>
+                  
+                    <small class="longtext wraptext"><strong>Name:
+                      </strong>{{notifyName(notify.notificationId)}}</small>
+                    <small class="longtext wraptext"><strong>Email: </strong>{{notifyEmail(notify.notificationId)}}</small>
+                    <small><strong style="color:#B40000">Expiring in Days: </strong>{{notify.days}}</small>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="Umore-btn">
+            <button mat-icon-button [matMenuTriggerFor]="UcardEdit"><i class="ti-more-alt"></i></button>
+            <mat-menu #UcardEdit="matMenu">
+              <button mat-menu-item (click)="notificationDetails(notify)"><i class="ti-info-alt"></i> {{'ActionNames.details' | translate}}</button>
+              <button mat-menu-item (click)="editnotification(notify)"><i class="ti-pencil-alt"></i> {{'ActionNames.edit' | translate}}</button>
+              <button mat-menu-item (click)="deleteNotification(notify)"><i class="ti-trash"></i>  {{'ActionNames.delete' | translate}}</button>
+            </mat-menu>
+          </div>
+
+        </div>
+
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+  <div style="width: 100%" *ngIf="notifications.length> pageSize">
+    <mat-paginator [length]="notifications.length" [pageSize]="pageSize" [pageIndex]="pageIndex" showFirstLastButtons
+    (page)="getData($event)">
+  </mat-paginator>
+</div>
+</div>
+
+<div *ngIf="listflag" class="example-container mat-elevation-z8 no-shadow bord-all">
+
+  <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData()" class="listtable">
+  
+  <ng-container matColumnDef="notificationName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Alert Name</mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.notificationName}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{notifyName(element.notificationId)}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Email </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{notifyEmail(element.notificationId)}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="phone">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Phone </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{notifyPhone(element.notificationId)}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="creditsbelow">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Creditd Below </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.creditsbelow}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="days">
+    <mat-header-cell *matHeaderCellDef mat-sort-header  class="mat-column-days"> Expiring in Days </mat-header-cell>
+    <mat-cell *matCellDef="let element"  class="mat-column-days"> {{element.days}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="smstext">
+    <mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column-smstext"> SMS Text </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="mat-column-smstext"> {{element.smstext}} </mat-cell>
+  </ng-container>
+
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column-actions"> Actions </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="mat-column-actions">
+      <i class="ti-info-alt link" (click)="notificationDetails(element)"></i>&nbsp;&nbsp;
+      <i class="ti-pencil-alt link" (click)="editnotification(element)"></i>&nbsp;&nbsp;
+      <i class="ti-trash link" (click)="deleteNotification(element)"></i>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<div style="width: 100%" *ngIf="notifications.length>pageSize">
+  <mat-paginator #paginator [pageSizeOptions]="[6, 12, 18]" [length]="notifications.length" [pageSize]="pageSize" [pageIndex]="listPage"
+  showFirstLastButtons (page)="getListData($event)">
+</mat-paginator>
+</div>
+</div>

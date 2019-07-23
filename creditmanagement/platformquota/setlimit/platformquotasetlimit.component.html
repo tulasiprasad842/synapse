@@ -1,0 +1,71 @@
+<mat-card>
+    <form [formGroup]="platformCreditsForm">
+      <mat-card-header style="border-bottom: 1px solid #eee;">
+          <div fxLayout="row wrap" fxFlex.gt-sm="88" style="word-break: break-all; word-wrap:break-word">
+            <h4>Fujairah Municipality {{'CreditManagementModule.departmentquota.setLimit.setLimit' | translate}}</h4>
+          </div>
+        <button mat-icon-button [mat-dialog-close] style="position: absolute; right: 1%;"><i
+            class="ti-close"></i></button>
+      </mat-card-header>
+  
+      <mat-card-content>
+        <div class="clearfix">
+          <div class="col-sm-12">
+            <div class="example-container">
+                <mat-form-field class="full-width">
+                    <mat-select  placeholder="Account Type" formControlName="accountType" disabled cdkFocusInitial>
+                      <!-- <mat-option value="Prepaid">Prepaid</mat-option>
+                      <mat-option value="Postpaid">Postpaid</mat-option> -->
+                      <mat-option *ngFor="let credit of CreditTypes" [value]="credit.creditTypeId">{{credit.creditName}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="platformCreditsForm.controls.accountType.errors?.required">
+                        Account Type Required</mat-error>
+                  </mat-form-field>
+      
+                  <mat-form-field class="full-width">
+                    <input matInput placeholder="Available Balance"  formControlName="availableBalance" readonly >
+                  </mat-form-field>
+      
+      
+          <mat-form-field class="full-width">
+            <mat-select autofocus placeholder="Adjustment Type" formControlName="adjustmentType" required>
+              <mat-option value="1">Recharge</mat-option>
+              <mat-option value="2">Rollback</mat-option>
+            </mat-select>
+            <mat-error *ngIf="platformCreditsForm.controls.adjustmentType.errors?.required">
+            Adjustment Type is required</mat-error>
+          </mat-form-field>
+      
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Credits" formControlName="modifiedCredits"
+              allow-numbers-nospace maxlength="10" required>
+            <mat-error *ngIf="platformCreditsForm.controls.modifiedCredits.errors?.required">
+            Credits required </mat-error>
+            <mat-error *ngIf="platformCreditsForm.controls.modifiedCredits.errors?.minlength">
+              Enter atleast 3 digits </mat-error>
+          </mat-form-field>
+      
+          <mat-checkbox color="primary" formControlName="hasExpiry" class="clearfix" (change)="hasExpiry()">Has Expiry Date</mat-checkbox>
+      
+          <mat-form-field class="full-width" *ngIf="platformCreditsForm.controls.hasExpiry.value == true">
+              <input matInput [matDatepicker]="picker" required placeholder="Expiry Date"
+                formControlName="expiryDate" parse-format="MM/dd/yyyy" readonly (focus)="picker.open()" [min]="today">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="platformCreditsForm.controls.expiryDate.errors?.required">Expiry Date is required</mat-error>
+            </mat-form-field>
+ 
+            </div>
+          </div>
+        </div>
+
+        <button mat-raised-button class="submitbutton mar-lft mar-top" (click)="addCredits()" [disabled]="!platformCreditsForm.valid">{{'ActionNames.save' | translate}}</button>
+      </mat-card-content>
+    </form>
+  </mat-card>
+  
+  <!-- <div class="fullloader" *ngIf="loading">
+    <div class="fullloaderInner">
+      <img src="assets/images/loading.gif">
+    </div>
+  </div> -->
